@@ -5,3 +5,4 @@
 ## Goals
 
 - Never unwrap (except for tests)
+- Minimize dependencies -- if we can only have `anyhow` and nothing else, that'd be great
