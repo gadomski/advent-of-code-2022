@@ -83,7 +83,7 @@ impl FromStr for Packet {
         } else if !s.ends_with(']') {
             Err(anyhow!("packet must end with a ']'"))
         } else {
-            let list = parse_list(&mut s[1..(s.len() - 1)].chars().peekable())?;
+            let list = parse_list(&mut s.chars().peekable())?;
             Ok(Packet(list))
         }
     }
@@ -156,19 +156,18 @@ fn cmp_list(left: &[Value], right: &[Value]) -> Ordering {
     let mut right_iter = right.iter();
     while let Some(left) = left_iter.next() {
         if let Some(right) = right_iter.next() {
-            if let Some(ordering) = left.partial_cmp(right) {
-                if !matches!(ordering, Equal) {
-                    return ordering;
-                }
+            let ordering = left.cmp(right);
+            if !matches!(ordering, Equal) {
+                return ordering;
             }
         } else {
-            return Ordering::Greater;
+            return Greater;
         }
     }
     if right_iter.next().is_some() {
-        Ordering::Less
+        Less
     } else {
-        Ordering::Equal
+        Equal
     }
 }
 
